@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
-#include <limits> 
+#include <limits>
+#include <cmath>
 
 #include "SOperandMaker.hpp"
 

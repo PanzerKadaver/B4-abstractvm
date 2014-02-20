@@ -22,14 +22,14 @@ class IOperand
 {
 public:
 	// DTOR
-	virtual ~IOperand() {};
+	virtual ~IOperand(void) {};
 
 	// GETTER
-	virtual int getPrecision() const = 0;
-	virtual eOperandType getType() const = 0;
+	virtual int getPrecision(void) const = 0;
+	virtual eOperandType getType(void) const = 0;
 
-	// STR
-	virtual const std::string &toString() const = 0;
+	// DISPLAY
+	virtual const std::string &toString(void) const = 0;
 
 	// OPERATORS
 	virtual IOperand *operator+(const IOperand &) const = 0;

@@ -1,6 +1,6 @@
 #include <map>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream> // DEBUG
 
 #include "SOperandMaker.hpp"
@@ -16,6 +16,7 @@ std::map<eOperandType, SOperandMaker::func> SOperandMaker::initMap()
 	map[Int32] = &SOperandMaker::createInt32;
 	map[Float] = &SOperandMaker::createFloat;
 	map[Double] = &SOperandMaker::createDouble;
+
 	return map;
 }
 

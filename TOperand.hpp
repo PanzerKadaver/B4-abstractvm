@@ -1,7 +1,7 @@
 #ifndef ABSTRACTVM_T_OPERAND
 # define ABSTRACTVM_T_OPERAND
 
-# include <math.h>
+# include <cmath>
 # include <sstream>
 # include <typeinfo>
 
