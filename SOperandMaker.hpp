@@ -7,11 +7,13 @@
 
 class SOperandMaker
 {
+public:
+	// DEF
 	typedef IOperand *(*func)(const std::string &);
 
-public:
 	// CREATOR
 	static IOperand *createOperand(eOperandType, const std::string &);
+
 
 private:
 	// INIT

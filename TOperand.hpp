@@ -6,6 +6,7 @@
 # include <typeinfo>
 
 # include "IOperand.hpp"
+# include "SOperandMaker.hpp"
 # include "Trait.hpp"
 
 template <typename T>

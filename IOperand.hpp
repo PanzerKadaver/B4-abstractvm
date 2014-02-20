@@ -10,7 +10,7 @@ typedef int int32;
 
 enum eOperandType
 {
-	Unknow = 0,
+	Unknown = 0,
 	Int8 = 1,
 	Int16 = 2,
 	Int32 = 3,

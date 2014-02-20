@@ -5,9 +5,10 @@
 
 class SCommandMaker
 {
+public:
+	// DEF
 	typedef void (*func)(void);
 
-public:
 	// GETTER
 	static func getCommand(const std::string &);
 
