@@ -8,17 +8,17 @@ std::map<const char *, SCommandMaker::func> SCommandMaker::initMap()
 	std::map<const char *, func> map;
 
 	std::cout << "Init map" << std::endl; // DEBUG
-	map["push"] = NULL;
-	map["pop"] = NULL;
-	map["dump"] = NULL;
-	map["assert"] = NULL;
+	map["push"] = &Commands::Push;
+	map["pop"] = &Commands::Pop;
+	map["dump"] = &Commands::Dump;
+	map["assert"] = &Commands::Assert;
 	map["add"] = &Commands::Add;
 	map["sub"] = &Commands::Sub;
 	map["mul"] = &Commands::Mul;
 	map["div"] = &Commands::Div;
-	map["mod"] = NULL;
-	map["print"] = NULL;
-	map["exit"] = NULL;
+	map["mod"] = &Commands::Mod;
+	map["print"] = &Commands::Print;
+	map["exit"] = &Commands::Exit;
 
 	return map;
 }

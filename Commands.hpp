@@ -1,8 +1,6 @@
 #ifndef ABSTRACTVM_COMMANDS
 # define ABSTRACTVM_COMMANDS
 
-# include <string>
-
 namespace Commands
 {
 	void	Push();
