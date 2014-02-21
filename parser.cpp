@@ -114,6 +114,7 @@ std::queue<std::pair<SCommandMaker::func, IOperand *> >	parser(int ac, char **av
 	//     exception bad syntax
 	//    */	  
       }
+  return my_stack;
 }
 
 int		main(int ac, char **av)
