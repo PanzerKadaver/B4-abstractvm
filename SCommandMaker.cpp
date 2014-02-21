@@ -7,7 +7,7 @@ std::map<const char *, SCommandMaker::func> SCommandMaker::initMap()
 {
 	std::map<const char *, func> map;
 
-	std::cout << "Init map" << std::endl; // DEBUG
+	std::cout << "Init map IN SCOMMAND" << std::endl; // DEBUG
 	map["push"] = &Commands::Push;
 	map["pop"] = &Commands::Pop;
 	map["dump"] = &Commands::Dump;
@@ -19,6 +19,7 @@ std::map<const char *, SCommandMaker::func> SCommandMaker::initMap()
 	map["mod"] = &Commands::Mod;
 	map["print"] = &Commands::Print;
 	map["exit"] = &Commands::Exit;
+	map["Unknown"] = NULL;
 
 	return map;
 }
@@ -28,7 +29,7 @@ SCommandMaker::func SCommandMaker::getCommand(const std::string &cmd)
 	static std::map<const char *, func> commands = SCommandMaker::initMap();
 	std::map<const char *, func>::iterator it = commands.find(cmd.c_str());
 
-	if (it == commands.end() && cmd.compare(it->first) != 0)
+	if (it == commands.end())
 		return NULL;
 	else
 		return it->second;
