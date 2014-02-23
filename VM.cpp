@@ -14,8 +14,7 @@ IModule &VM::getModule(const std::string &mod) const
 {
 	std::map<const char *, IModule *>::const_iterator it = _modules.find(mod.c_str());
 
-	if (it != _modules.end())
-		return *(it->second);
-	/*else
-		/* throw exception */
+	/*if (it == _modules.end())
+	throw exception */
+	return *(it->second);
 }
