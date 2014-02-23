@@ -15,9 +15,21 @@ public:
 private:
   std::map<std::string, bool>	instr_map;
   std::map<std::string, bool>	types_map;
+  std::string			commandline;
+  std::vector<std::string>      commandtab;
 
   bool		init_instr_map(va_list &);
   bool		init_type_map(va_list &);
+  bool		parser(va_list &);
+  bool		jarvis(va_list &);
+  bool		lexer(va_list &);
+  bool		token_is_ok(va_list &);
+  bool		check_value(va_list &);
+  bool		id_digit(va_list &); // ?????
+  bool		token_order(va_list &);
+
+  bool		printit(va_list &); // DEBUG FUNK
+
 };
 
 
