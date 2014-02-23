@@ -1,18 +1,18 @@
-#include "Chipset_Module.hpp"
+#include "Chipset.hpp"
 
 
-Chipset_Module::Chipset_Module(VM &vm_ref) :
+Chipset::Chipset(VM &vm_ref) :
 	AModule(vm_ref, "Chipset")
 {
-	_components["push"] = static_cast<AModule::func>(&Chipset_Module::push);
-	_components["pop"] = static_cast<AModule::func>(&Chipset_Module::pop);
-	_components["get"] = static_cast<AModule::func>(&Chipset_Module::get);
-	_components["next"] = static_cast<AModule::func>(&Chipset_Module::next);
-	_components["run"] = static_cast<AModule::func>(&Chipset_Module::run);
+	_components["push"] = static_cast<AModule::func>(&Chipset::push);
+	_components["pop"] = static_cast<AModule::func>(&Chipset::pop);
+	_components["get"] = static_cast<AModule::func>(&Chipset::get);
+	_components["next"] = static_cast<AModule::func>(&Chipset::next);
+	_components["run"] = static_cast<AModule::func>(&Chipset::run);
 	_components["Unknown"] = NULL;
 }
 
-bool	Chipset_Module::push(va_list &args)
+bool	Chipset::push(va_list &args)
 {
 	const std::string cmd_name = va_arg(args, const std::string);
 	const std::string type_name = va_arg(args, const std::string);
@@ -26,13 +26,13 @@ bool	Chipset_Module::push(va_list &args)
 	return true;
 }
 
-bool	Chipset_Module::pop(va_list &args)
+bool	Chipset::pop(va_list &args)
 {
 	_cmdsQueue.pop();
 	return true;
 }
 
-bool	Chipset_Module::get(va_list &args)
+bool	Chipset::get(va_list &args)
 {
 	cmd_ptr	cmd;
 
@@ -43,7 +43,7 @@ bool	Chipset_Module::get(va_list &args)
 	return true;
 }
 
-bool	Chipset_Module::next(va_list &args)
+bool	Chipset::next(va_list &args)
 {
 	cmd_type next_cmd;
 
@@ -54,7 +54,7 @@ bool	Chipset_Module::next(va_list &args)
 	return true;
 }
 
-bool	Chipset_Module::run(va_list &args)
+bool	Chipset::run(va_list &args)
 {
 	while (exec("next")) {}
 	return true;

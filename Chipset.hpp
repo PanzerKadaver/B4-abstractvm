@@ -1,5 +1,5 @@
-#ifndef ABSTRACTVM_CHIPSET_MODULE
-# define ABSTRACTVM_CHIPSET_MODULE
+#ifndef ABSTRACTVM_CHIPSET
+# define ABSTRACTVM_CHIPSET
 
 # include <cstdarg>
 # include <queue>
@@ -8,11 +8,11 @@
 # include "VM.hpp"
 # include "AModule.hpp"
 
-class Chipset_Module :	public AModule
+class Chipset :	public AModule
 {
 public:
-	Chipset_Module(VM &);
-	~Chipset_Module(void) {};
+	Chipset(VM &);
+	~Chipset(void) {};
 
 private:
 	typedef std::pair<const char *, std::pair<const char *, const char *>> cmd_type;
@@ -28,4 +28,4 @@ private:
 };
 
 
-#endif // !ABSTRACTVM_CHIPSET_MODULE
+#endif // !ABSTRACTVM_CHIPSET

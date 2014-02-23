@@ -1,10 +1,11 @@
 #include "VM.hpp"
-#include "IO_Module.hpp"
+#include "IO.hpp"
+#include "Chipset.hpp"
 
 VM::VM()
 {
-	_modules["IO"] = new IO_Module(*this);
-	_modules["Chipset"];
+	_modules["IO"] = new IO(*this);
+	_modules["Chipset"] = new Chipset(*this);
 	_modules["CPU"];
 	_modules["StackMemory"];
 	_modules["Unknown"] = NULL;
