@@ -216,12 +216,12 @@ char		is_digit(char c)
 
 // }
 
-int main(int ac, char **av)
-{
-  /* check ac, av */
-  jarvis(ac, av);
+// int main(int ac, char **av)
+// {
+//   /* check ac, av */
+//   jarvis(ac, av);
 
 
-  /* check ctrl+d */
-  return 0;
-}
+//   /* check ctrl+d */
+//   return 0;
+// }

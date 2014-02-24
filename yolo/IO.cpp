@@ -86,9 +86,10 @@ bool            IO::parser(va_list &args)
     }
 }
 
-bool            IO::is_digit(char c) // ????? // second param(ptr) as a returned value
+bool		IO::is_digit(va_list &args)
 {
   char	c = va_arg(args, char);
+  int	p = va_arg(args, int*);
 
   if (c >= '0' && c <= '9')
     return 0;
@@ -100,7 +101,7 @@ bool            IO::is_digit(char c) // ????? // second param(ptr) as a returned
 bool            IO::check_value(va_list &args)
 {
   int           i = 0;
-  char          ret;
+  int		ret = 0;
   bool          is_dec = false;
   std::string	token = va_arg(args, std::string);
 
@@ -109,7 +110,7 @@ bool            IO::check_value(va_list &args)
 
   for (int j = i; token[j] != '\0'; j++)
     {
-      ret = is_digit(token[i]);
+      exec("is_digit", token[i], &ret);
       if (ret == -1)
         return false; // NON DIGIT VALUE                                                                             
       if (ret == 1 && is_dec == false)
@@ -129,14 +130,14 @@ bool            IO::token_is_ok(va_list &args)
   std::map<std::string, bool>::iterator it;
 
   it = instr_map.find(token);
-  if (it != instr.end()) // if token is INSTR                                                                        
+  if (it != instr_map.end()) // if token is INSTR                                                                        
     {
       std::cout << "token [" << token << "] found as INSTR" << std::endl; // DEBUG                                   
       is_ok = true;
     }
 
-  it = types.find(token);
-  if (it != types.end() && is_ok == false) // if token is TYPE                                                       
+  it = types_map.find(token);
+  if (it != types_map.end() && is_ok == false) // if token is TYPE                                                       
     {
       std::cout << "token [" << token << "] found as TYPE" << std::endl; // DEBUG                                    
       is_ok = true;
@@ -167,14 +168,14 @@ bool            IO::token_is_ok(va_list &args)
   /* exception BAD SYNTAX */
 }
 
-bool            token_order(va_list &args)
+bool            IO::token_order(va_list &args)
 {
   int   i = 0;
   std::vector<std::string> commandtab = va_arg(args, std::string);
   std::map<std::string, bool>::iterator it;
 
 
-  it = instr.find(commandtab[i++]); // got an iterator to the right INSTR                                            
+  it = instr_map.find(commandtab[i++]); // got an iterator to the right INSTR                                            
 
   if (commandtab.size() == 1) // it MUST BE an INSTR like PUSH or ASSERT                                             
     {
@@ -186,8 +187,8 @@ bool            token_order(va_list &args)
       if (it->second == false)
 	std::cout << "bad syntax 2 (bad instr, must be push or assert)" << std::endl; // exception UNEXPECTED TOKEN  
 
-      it = types.find(commandtab[i++]); // got an iterator to the right INSTR                                        
-      if (it == types.end())
+      it = types_map.find(commandtab[i++]); // got an iterator to the right INSTR                                        
+      if (it == types_map.end())
 	std::cout << "bad syntax 3 (type not found)" << std::endl; // exception UNEXPECTED TOKEN                     
 
       if (commandtab[i++][0] != '(')
@@ -209,7 +210,7 @@ bool            token_order(va_list &args)
 
 }
 
-bool            lexer(va_list &args)
+bool            IO::lexer(va_list &args)
 {
   int len = commandtab.size();
 
@@ -249,4 +250,14 @@ bool            IO::jarvis(va_list &args)
       exec("lexer");
 
     }
+}
+
+int main(int ac, char **av)
+{
+  /* check ctr+d ?, check ac/av */
+
+  VM	_vm;
+
+  _vm.getModule("IO").exec("jarvis", ac, av);
+
 }

@@ -1,6 +1,7 @@
 #ifndef ABSTRACTVM_IO
 # define ABSTRACTVM_IO
 
+# include <vector>
 # include <cstdarg>
 
 # include "VM.hpp"
@@ -24,8 +25,8 @@ private:
   bool		jarvis(va_list &);
   bool		lexer(va_list &);
   bool		token_is_ok(va_list &);
+  bool		is_digit(va_list &);
   bool		check_value(va_list &);
-  bool		id_digit(va_list &); // ?????
   bool		token_order(va_list &);
 
   bool		printit(va_list &); // DEBUG FUNK
