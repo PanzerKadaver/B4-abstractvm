@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "AModule.hpp"
 
 
@@ -14,14 +16,18 @@ const std::string &AModule::name() const
 
 bool AModule::exec(const std::string &cmd, ...)
 {
-	std::map<const char *, func>::iterator it = _components.find(cmd.c_str());
+	std::map<const char *, AModule::func>::iterator start = _components.begin();
+	std::map<const char *, AModule::func>::iterator end = _components.end();
 	va_list vl;
 
+	std::cout << cmd.c_str() << std::endl;
+	while (start != end && cmd.compare(start->first) != 0)
+		++start;
 	/*if (it == _fcts.end())
 	throw exception */
 	bool r;
 	va_start(vl, cmd);
-	r = (*this.*(it->second))(vl);
+	r = (*this.*(start->second))(vl);
 	va_end(vl);
 	return r;
 }

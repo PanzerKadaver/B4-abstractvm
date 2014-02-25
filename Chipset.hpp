@@ -15,7 +15,7 @@ public:
 	~Chipset(void) {};
 
 private:
-	typedef std::pair<const char *, std::pair<const char *, const char *>> cmd_type;
+	typedef std::pair<const char *, std::pair<const char *, const char *> > cmd_type;
 	typedef cmd_type *cmd_ptr;
 
 	std::queue<cmd_type> _cmdsQueue;
