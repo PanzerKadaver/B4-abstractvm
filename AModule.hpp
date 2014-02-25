@@ -16,7 +16,7 @@ public:
 	bool exec(const std::string &, ...);
 
 protected:
-	typedef bool (AModule::*func)(va_list &);
+	typedef bool (AModule::*func)(va_list *);
 
 	VM								&_vm;
 	const std::string				_name;

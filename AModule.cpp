@@ -20,14 +20,14 @@ bool AModule::exec(const std::string &cmd, ...)
 	std::map<const char *, AModule::func>::iterator end = _components.end();
 	va_list vl;
 
-	std::cout << cmd.c_str() << std::endl;
+	std::cout << "Exec function [" << cmd << "]" << std::endl;
 	while (start != end && cmd.compare(start->first) != 0)
 		++start;
 	/*if (it == _fcts.end())
 	throw exception */
 	bool r;
 	va_start(vl, cmd);
-	r = (*this.*(start->second))(vl);
+	r = (*this.*(start->second))(&vl);
 	va_end(vl);
 	return r;
 }
