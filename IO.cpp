@@ -65,6 +65,8 @@ bool            IO::init_type_map(va_list *args)
 bool            IO::parser(va_list *args)
 {
 	int i = 0;
+	
+	//std::vector<std::string>	tokentab;
 	std::string                   token;
 
 	(void)args;
@@ -73,12 +75,13 @@ bool            IO::parser(va_list *args)
 
 	while (commandline[i])
 	{
+		
 		if (commandline[i] == ';' && commandline[i+1] != ';') // if commentary, copy all from ';' in a token and break
 		{
 			std::cout << "in com cuz of [" << commandline[i] << "]"<< std::endl;
 			while (commandline[i])
 				token += commandline[i++];
-			commandtab.push_back(token.c_str());
+			commandtab.push_back(token);
 			break;
 		}
 
@@ -91,7 +94,7 @@ bool            IO::parser(va_list *args)
 			|| commandline[i+1] == '\0')
 		{
 			std::cout << "tokened' success" << std::endl; // DEBUG                                                     
-			commandtab.push_back(token.c_str());
+			commandtab.push_back(token);
 			token.clear();
 		}
 		i++;
@@ -108,7 +111,8 @@ bool		IO::is_digit(va_list *args)
 		*p = 0;
 	else if (c == '.')
 		*p = 1;
-	*p = -1;
+	else
+		*p = -1;
 	return true;
 }
 
@@ -213,7 +217,7 @@ bool            IO::token_order(va_list *args)
 		if (commandtab[i++][0] != '(')
 			std::cout << "bad syntax 4 (must be '(') " << std::endl; // exception UNEXPECTED TOKEN                       
 
-		if ((exec("check_value", commandtab[i++])) == false)
+		if ((exec("check_value", commandtab[i++].c_str())) == false)
 			std::cout << "bad syntax 5 (bad value) " << std::endl; // exception UNEXPECTED TOKEN                         
 
 		std::cout << "AV" << std::endl;
@@ -238,11 +242,11 @@ bool            IO::lexer(va_list *args)
 		std::cout << "\n***bad syntax CODE ZERO***\n" << std::endl; // DEBUG   /*exception BAD SYNTAX*/
 
 	/* check if token, whatever is type, is correct */
-	std::vector<const char *>::iterator first = commandtab.begin();
-	std::vector<const char *>::iterator end = commandtab.end();
+	std::vector<std::string>::iterator first = commandtab.begin();
+	std::vector<std::string>::iterator end = commandtab.end();
 	while (first != end)
 	{
-		exec("token_is_ok");
+		exec("token_is_ok", (*first).c_str());
 		++first;
 	}
 	//for_each(commandtab.begin(), commandtab.end(), (this->exec("token_is_ok")));
@@ -309,11 +313,11 @@ bool            IO::jarvis(va_list *args)
 
 		exec("parser");
 
-		std::vector<const char *>::iterator first = commandtab.begin(); // DEBUG
-		std::vector<const char *>::iterator end = commandtab.end(); // DEBUG
+		std::vector<std::string>::iterator first = commandtab.begin(); // DEBUG
+		std::vector<std::string>::iterator end = commandtab.end(); // DEBUG
 		while (first != end) // DEBUG
 		{
-			exec("printit");
+			exec("printit", (*first).c_str());
 			++first;
 		}
 		//for_each(commandtab.begin(), commandtab.end(), (this->)); // DEBUG

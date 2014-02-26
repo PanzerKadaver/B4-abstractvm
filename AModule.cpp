@@ -14,14 +14,15 @@ const std::string &AModule::name() const
 	return _name;
 }
 
-bool AModule::exec(const std::string &cmd, ...)
+bool AModule::exec(const char *cmd, ...)
 {
 	std::map<const char *, AModule::func>::iterator start = _components.begin();
 	std::map<const char *, AModule::func>::iterator end = _components.end();
 	va_list vl;
+	const std::string s_cmd(cmd);
 
-	std::cout << "Exec function [" << cmd << "]" << std::endl;
-	while (start != end && cmd.compare(start->first) != 0)
+	std::cout << "Exec function [" << s_cmd << "]" << std::endl;
+	while (start != end && s_cmd.compare(start->first) != 0)
 		++start;
 	/*if (it == _fcts.end())
 	throw exception */

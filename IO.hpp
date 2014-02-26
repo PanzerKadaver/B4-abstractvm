@@ -17,7 +17,7 @@ private:
   std::map<std::string, bool>	instr_map;
   std::map<std::string, bool>	types_map;
   std::string			commandline;
-  std::vector<const char *>	commandtab;
+  std::vector<std::string>	commandtab;
 
   bool		init_instr_map(va_list *);
   bool		init_type_map(va_list *);

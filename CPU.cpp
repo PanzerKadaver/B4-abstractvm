@@ -39,12 +39,12 @@ bool	CPU::run(va_list &args)
 	eOperandType eType;
 
 	if (type.empty() && value.empty())
-		exec(cmd_name, NULL);
+		exec(cmd_name.c_str(), NULL);
 	else
 	{
 		exec("type", type.c_str(), &eType);
 		IOperand *op = SOperandMaker::createOperand(eType, value);
-		exec(cmd_name, op);
+		exec(cmd_name.c_str(), op);
 	}
 	return true;
 }

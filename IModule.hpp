@@ -9,7 +9,7 @@ public:
 	virtual ~IModule(void) {}
 
 	virtual const std::string &name(void) const = 0;
-	virtual bool exec(const std::string &, ...) = 0;
+	virtual bool exec(const char *, ...) = 0;
 };
 
 

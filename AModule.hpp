@@ -13,7 +13,7 @@ public:
 	virtual ~AModule(void) {};
 
 	const std::string &name(void) const;
-	bool exec(const std::string &, ...);
+	bool exec(const char *, ...);
 
 protected:
 	typedef bool (AModule::*func)(va_list *);
