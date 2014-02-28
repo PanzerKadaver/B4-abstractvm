@@ -10,13 +10,12 @@ std::map<eOperandType, SOperandMaker::func> SOperandMaker::initMap()
 {
 	std::map<eOperandType, func> map;
 
-	std::cout << "Init map  IN SOPERAND" << std::endl; // DEBUG
+	std::cout << "Init map IN SOPERAND" << std::endl; // DEBUG
 	map[Int8] = &SOperandMaker::createInt8;
 	map[Int16] = &SOperandMaker::createInt16;
 	map[Int32] = &SOperandMaker::createInt32;
 	map[Float] = &SOperandMaker::createFloat;
 	map[Double] = &SOperandMaker::createDouble;
-	map[Unknown] = NULL;
 
 	return map;
 }

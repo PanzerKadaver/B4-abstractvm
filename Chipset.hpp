@@ -15,16 +15,16 @@ public:
 	~Chipset(void) {};
 
 private:
-	typedef std::pair<const char *, std::pair<const char *, const char *> > cmd_type;
+	typedef std::pair<std::string, std::pair<std::string, std::string> > cmd_type;
 	typedef cmd_type *cmd_ptr;
 
 	std::queue<cmd_type> _cmdsQueue;
 
-	bool	push(va_list &);
-	bool	pop(va_list &);
-	bool	get(va_list &);
-	bool	next(va_list &);
-	bool	run(va_list &);
+	bool	push(va_list *);
+	bool	pop(va_list *);
+	bool	get(va_list *);
+	bool	next(va_list *);
+	bool	run(va_list *);
 };
 
 

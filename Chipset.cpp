@@ -9,16 +9,15 @@ Chipset::Chipset(VM &vm_ref) :
 	_components["get"] = reinterpret_cast<AModule::func>(&Chipset::get);
 	_components["next"] = reinterpret_cast<AModule::func>(&Chipset::next);
 	_components["run"] = reinterpret_cast<AModule::func>(&Chipset::run);
-	_components["Unknown"] = NULL;
 }
 
-bool	Chipset::push(va_list &args)
+bool	Chipset::push(va_list *args)
 {
-	const char *cmd_name = va_arg(args, const char *);
-	const char *type_name = va_arg(args, const char *);
-	const char *value_name = va_arg(args, const char *);
-	std::pair<const char *, const char *> params;
-	std::pair<const char *, std::pair<const char *, const char *> > cmd;
+	std::string cmd_name(va_arg(*args, const char *));
+	std::string type_name(va_arg(*args, const char *));
+	std::string value_name(va_arg(*args, const char *));
+	std::pair<std::string, std::string> params;
+	std::pair<std::string, std::pair<std::string, std::string> > cmd;
 	
 	params = std::make_pair(type_name, value_name);
 	cmd = std::make_pair(cmd_name, params);
@@ -26,26 +25,26 @@ bool	Chipset::push(va_list &args)
 	return true;
 }
 
-bool	Chipset::pop(va_list &args)
+bool	Chipset::pop(va_list *args)
 {
 	(void)args;
 	_cmdsQueue.pop();
 	return true;
 }
 
-bool	Chipset::get(va_list &args)
+bool	Chipset::get(va_list *args)
 {
 	cmd_ptr	cmd;
 
 	(void)args;
-	cmd = va_arg(args, cmd_ptr);
+	cmd = va_arg(*args, cmd_ptr);
 	if (_cmdsQueue.empty())
 		return false;
 	*cmd = _cmdsQueue.front();
 	return true;
 }
 
-bool	Chipset::next(va_list &args)
+bool	Chipset::next(va_list *args)
 {
 	cmd_type next_cmd;
 
@@ -57,7 +56,7 @@ bool	Chipset::next(va_list &args)
 	return true;
 }
 
-bool	Chipset::run(va_list &args)
+bool	Chipset::run(va_list *args)
 {
 	(void)args;
 	while (exec("next")) {}

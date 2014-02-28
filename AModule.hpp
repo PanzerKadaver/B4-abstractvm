@@ -20,7 +20,7 @@ protected:
 
 	VM								&_vm;
 	const std::string				_name;
-	std::map<const char *, func>	_components;
+	std::map<std::string, func>	_components;
 };
 
 

@@ -3,35 +3,37 @@
 
 #include "CPU.hpp"
 #include "SOperandMaker.hpp"
+#include "Exception.hpp"
 
 
 CPU::CPU(VM &vm_ref) :
 	AModule(vm_ref, "CPU")
 {
+	_components["run"] = reinterpret_cast<AModule::func>(&CPU::run);
+	_components["type"] = reinterpret_cast<AModule::func>(&CPU::type);
 	_components["push"] = reinterpret_cast<AModule::func>(&CPU::push);
-	_components["pop"];
-	_components["dump"];
-	_components["assert"];
-	_components["add"];
-	_components["sub"];
-	_components["mul"];
-	_components["div"];
-	_components["mod"];
-	_components["print"];
-	_components["exit"];
-	_components["Unknown"] = NULL;
+	_components["pop"] = reinterpret_cast<AModule::func>(&CPU::pop);
+	_components["dump"] = reinterpret_cast<AModule::func>(&CPU::dump);
+	_components["assert"] = reinterpret_cast<AModule::func>(&CPU::assert);
+	_components["doop"] = reinterpret_cast<AModule::func>(&CPU::doop);
+	_components["add"] = reinterpret_cast<AModule::func>(&CPU::add);
+	_components["sub"] = reinterpret_cast<AModule::func>(&CPU::sub);
+	_components["mul"] = reinterpret_cast<AModule::func>(&CPU::mul);
+	_components["div"] = reinterpret_cast<AModule::func>(&CPU::div);
+	_components["mod"] = reinterpret_cast<AModule::func>(&CPU::mod);
+	_components["print"] = reinterpret_cast<AModule::func>(&CPU::print);
+	_components["exit"] = reinterpret_cast<AModule::func>(&CPU::exit);
 
 	_types["int8"] = Int8;
 	_types["int16"] = Int16;
 	_types["int32"] = Int32;
 	_types["float"] = Float;
 	_types["double"] = Double;
-	_types["Unknown"] = Unknown;
 }
 
-bool	CPU::run(va_list &args)
+bool	CPU::run(va_list *args)
 {
-	cmd_type cmd = *va_arg(args, cmd_ptr);
+	cmd_type cmd = *va_arg(*args, cmd_ptr);
 
 	std::string cmd_name(cmd.first);
 	std::string type(cmd.second.first);
@@ -49,21 +51,28 @@ bool	CPU::run(va_list &args)
 	return true;
 }
 
-bool	CPU::type(va_list &args)
+bool	CPU::type(va_list *args)
 {
-	const char *type_name = va_arg(args, const char *);
-	eOperandType *eType = va_arg(args, eOperandType *);
+	std::string type_name(va_arg(*args, const char *));
+	eOperandType *eType = va_arg(*args, eOperandType *);
 	type_map::iterator it = _types.find(type_name);
 
-	/*if (it == _types.end())
-	throw exeception */
+	try
+	{
+		if (it == _types.end())
+			throw Exception("Invalid operand type");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		::exit(0x31);
+	}
 	*eType = it->second;
 	return true;
 }
 
-bool	CPU::push(va_list &args)
+bool	CPU::push(va_list *args)
 {
-	IOperand *op = va_arg(args, IOperand *);
+	IOperand *op = va_arg(*args, IOperand *);
 
 	/*if (op == NULL)
 	throw exception */
@@ -71,43 +80,73 @@ bool	CPU::push(va_list &args)
 	return true;
 }
 
-bool	CPU::pop(va_list &args)
+bool	CPU::pop(va_list *args)
 {
-	IOperand *op = va_arg(args, IOperand *);
+	IOperand **op = va_arg(*args, IOperand **);
 
 	_vm.getModule("StackMemory").exec("pop", op);
 	return true;
 }
 
-bool	CPU::dump(va_list &args)
+bool	CPU::dump(va_list *args)
 {
 	(void)args;
 	_vm.getModule("StackMemory").exec("dump");
 	return true;
 }
 
-bool	CPU::assert(va_list &args)
+bool	CPU::assert(va_list *args)
 {
-	IOperand *op = va_arg(args, IOperand *);
+	IOperand *op = va_arg(*args, IOperand *);
 	IOperand *top = NULL;
 
 	_vm.getModule("StackMemory").exec("front", top);
-	if (op->toString().empty() && top->getType() == op->getType())
-		return true;
-	else if (op->toString() == top->toString() && top->getType() == op->getType())
-		return true;
-	return false; // Throw exception
+	try
+	{
+		if (op->toString().empty() && top->getType() == op->getType())
+			return true;
+		else if (op->toString() == top->toString() && top->getType() == op->getType())
+			return true;
+		else
+			throw Exception("Assertion fail");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		::exit(0x32);
+	}
+	return true;
 }
 
-bool	CPU::add(va_list &args)
+bool	CPU::doop(va_list *args)
+{
+	IOperand **left = va_arg(*args, IOperand **);
+	IOperand **right = va_arg(*args, IOperand **);
+
+	try
+	{
+		size_t	size;
+
+		_vm.getModule("StackMemory").exec("size", &size);
+		if (size < 2)
+			throw Exception("Unable to do op with less than 2 value");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		::exit(0x33);
+	}
+	exec("pop", right);
+	exec("pop", left);
+	return true;
+}
+
+bool	CPU::add(va_list *args)
 {
 	IOperand *left = NULL;
 	IOperand *right = NULL;
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("pop", right);
-	exec("pop", left);
+	exec("doop", &left, &right);
 	result = (*left + *right);
 	delete left;
 	delete right;
@@ -115,15 +154,14 @@ bool	CPU::add(va_list &args)
 	return true;
 }
 
-bool	CPU::sub(va_list &args)
+bool	CPU::sub(va_list *args)
 {
 	IOperand *left = NULL;
 	IOperand *right = NULL;
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("pop", right);
-	exec("pop", left);
+	exec("doop", left, right);
 	result = (*left - *right);
 	delete left;
 	delete right;
@@ -131,15 +169,14 @@ bool	CPU::sub(va_list &args)
 	return true;
 }
 
-bool	CPU::mul(va_list &args)
+bool	CPU::mul(va_list *args)
 {
 	IOperand *left = NULL;
 	IOperand *right = NULL;
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("pop", right);
-	exec("pop", left);
+	exec("doop", left, right);
 	result = (*left * *right);
 	delete left;
 	delete right;
@@ -147,15 +184,14 @@ bool	CPU::mul(va_list &args)
 	return true;
 }
 
-bool	CPU::div(va_list &args)
+bool	CPU::div(va_list *args)
 {
 	IOperand *left = NULL;
 	IOperand *right = NULL;
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("pop", right);
-	exec("pop", left);
+	exec("doop", left, right);
 	result = (*left / *right);
 	delete left;
 	delete right;
@@ -163,15 +199,14 @@ bool	CPU::div(va_list &args)
 	return true;
 }
 
-bool	CPU::mod(va_list &args)
+bool	CPU::mod(va_list *args)
 {
 	IOperand *left = NULL;
 	IOperand *right = NULL;
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("pop", right);
-	exec("pop", left);
+	exec("doop", left, right);
 	result = (*left % *right);
 	delete left;
 	delete right;
@@ -179,7 +214,7 @@ bool	CPU::mod(va_list &args)
 	return true;
 }
 
-bool	CPU::print(va_list &args)
+bool	CPU::print(va_list *args)
 {
 	IOperand *test8 = SOperandMaker::createOperand(Int8, "");
 	IOperand *top = NULL;
@@ -187,14 +222,14 @@ bool	CPU::print(va_list &args)
 
 	(void)args;
 	exec("assert", test8);
-	_vm.getModule("StackModule").exec("front", top);
+	_vm.getModule("StackMemory").exec("front", top);
 	std::istringstream t_ss(top->toString());
 	t_ss >> c;
-	/* to IO */
+	std::cout << c << std::endl;
 	return true;
 }
 
-bool	CPU::exit(va_list &args)
+bool	CPU::exit(va_list *args)
 {
 	(void)args;
 	/* _vm.exit() */

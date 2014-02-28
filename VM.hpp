@@ -11,7 +11,7 @@ public:
 	VM(void);
 	~VM(void) {};
 
-	IModule &getModule(const std::string &) const;
+	IModule &getModule(const char *) const;
 
 private:
 	std::map<const char *, IModule *> _modules;

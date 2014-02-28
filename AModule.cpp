@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "AModule.hpp"
+#include "Exception.hpp"
 
 
 AModule::AModule(VM &vm_ref, const std::string &name) :
@@ -16,19 +17,25 @@ const std::string &AModule::name() const
 
 bool AModule::exec(const char *cmd, ...)
 {
-	std::map<const char *, AModule::func>::iterator start = _components.begin();
-	std::map<const char *, AModule::func>::iterator end = _components.end();
+	std::string s_cmd(cmd);
+	std::map<std::string, AModule::func>::iterator it = _components.find(s_cmd);
 	va_list vl;
-	const std::string s_cmd(cmd);
+	bool r = false;
 
 	std::cout << "Exec function [" << s_cmd << "]" << std::endl;
-	while (start != end && s_cmd.compare(start->first) != 0)
-		++start;
-	/*if (it == _fcts.end())
-	throw exception */
-	bool r;
-	va_start(vl, cmd);
-	r = (*this.*(start->second))(&vl);
-	va_end(vl);
+
+	try
+	{
+		if (it == _components.end())
+			throw Exception("Invalid function");
+		
+		va_start(vl, cmd);
+		r = (*this.*(it->second))(&vl);
+		va_end(vl);
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x02);
+	}
 	return r;
 }
