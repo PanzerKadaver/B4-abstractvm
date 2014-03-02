@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "VM.hpp"
 #include "Exception.hpp"
@@ -16,10 +17,12 @@ int main(int ac, char **av)
 		}
 		else
 			throw Exception("Usage : ./avm [file]");
+		_vm.getModule("Chipset").exec("run");
+		throw Exception("Unbehavior exit");
 	} catch(Exception ex) {
 		std::cerr << ex.what() << std::endl;
+		exit(-1);
 	}
-	_vm.getModule("Chipset").exec("run");
-	system("PAUSE");
+	
 	return 0;
 }

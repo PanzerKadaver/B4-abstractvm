@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "AModule.hpp"
 #include "Exception.hpp"
@@ -17,13 +18,12 @@ const std::string &AModule::name() const
 
 bool AModule::exec(const char *cmd, ...)
 {
-	std::string s_cmd(cmd);
-	std::map<std::string, AModule::func>::iterator it = _components.find(s_cmd);
+	const std::string s_cmd(cmd);
+	std::map<const std::string, AModule::func>::iterator it = _components.find(s_cmd);
 	va_list vl;
 	bool r = false;
 
-	std::cout << "Exec function [" << s_cmd << "]" << std::endl;
-
+	//std::cout << "Exec function [" << s_cmd << "]" << std::endl;
 	try
 	{
 		if (it == _components.end())

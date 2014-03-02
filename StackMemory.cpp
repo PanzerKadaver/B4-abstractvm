@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "StackMemory.hpp"
 #include "Exception.hpp"
@@ -51,6 +52,7 @@ bool	StackMemory::dump(va_list *args)
 {
 	std::stack<IOperand *> _cpy_stack(_stack);
 
+	(void)args;
 	while (!_cpy_stack.empty())
 	{
 		std::cout << _cpy_stack.top()->toString() << std::endl;

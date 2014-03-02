@@ -4,10 +4,12 @@
 # include <cmath>
 # include <sstream>
 # include <typeinfo>
+# include <cstdlib>
 
 # include "IOperand.hpp"
 # include "SOperandMaker.hpp"
 # include "Trait.hpp"
+# include "Exception.hpp"
 
 template <typename T>
 class TOperand : public IOperand
@@ -23,12 +25,16 @@ public:
 
 	// STR
 	const std::string &toString() const;
+	void setString(const std::string &);
 
 	IOperand *operator+(const IOperand &) const;
 	IOperand *operator-(const IOperand &) const;
 	IOperand *operator*(const IOperand &) const;
 	IOperand *operator/(const IOperand &) const;
 	IOperand *operator%(const IOperand &) const;
+
+	void	checkOverflow(long double) const;
+	void	checkUnderflow(long double) const;
 
 private:
 	T				_value;
@@ -72,6 +78,12 @@ template <typename T>
 const std::string &TOperand<T>::toString() const
 {
 	return _string;
+}
+
+template <typename T>
+void	TOperand<T>::setString(const std::string &s)
+{
+	_string = s.c_str();
 }
 
 template <typename T>
@@ -160,6 +172,34 @@ IOperand *TOperand<T>::operator%(const IOperand &other) const
 }
 
 template <typename T>
+void	TOperand<T>::checkOverflow(long double val) const
+{
+	try
+	{
+		if (val > std::numeric_limits<T>::max() && val != 0)
+			throw Exception("Value Overflow");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x50);
+	}
+}
+
+template <typename T>
+void	TOperand<T>::checkUnderflow(long double val) const
+{
+	try
+	{
+		if (val < std::numeric_limits<T>::min() && val != 0)
+			throw Exception("Value Underflow");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x51);
+	}
+}
+
+template <typename T>
 IOperand *TOperand<T>::doAdd(eOperandType type, const std::string &left, const std::string &right) const
 {
 	T l_value;
@@ -169,8 +209,26 @@ IOperand *TOperand<T>::doAdd(eOperandType type, const std::string &left, const s
 
 	l_ss >> l_value;
 	r_ss >> r_value;
+	checkOverflow(l_value + r_value);
+	checkUnderflow(l_value + r_value);
 
 	return new TOperand<T>(type, (l_value + r_value));
+}
+
+template <>
+IOperand *TOperand<int8>::doAdd(eOperandType type, const std::string &left, const std::string &right) const
+{
+	int l_value;
+	int	r_value;
+	std::istringstream l_ss(left);
+	std::istringstream r_ss(right);
+
+	l_ss >> l_value;
+	r_ss >> r_value;
+	checkOverflow(l_value + r_value);
+	checkUnderflow(l_value + r_value);
+
+	return new TOperand<int8>(type, (l_value + r_value));
 }
 
 template <typename T>
@@ -183,8 +241,26 @@ IOperand *TOperand<T>::doLess(eOperandType type, const std::string &left, const 
 
 	l_ss >> l_value;
 	r_ss >> r_value;
+	checkOverflow(l_value - r_value);
+	checkUnderflow(l_value - r_value);
 
 	return new TOperand<T>(type, (l_value - r_value));
+}
+
+template <>
+IOperand *TOperand<int8>::doLess(eOperandType type, const std::string &left, const std::string &right) const
+{
+	int l_value;
+	int r_value;
+	std::istringstream l_ss(left);
+	std::istringstream r_ss(right);
+
+	l_ss >> l_value;
+	r_ss >> r_value;
+	checkOverflow(l_value - r_value);
+	checkUnderflow(l_value - r_value);
+
+	return new TOperand<int8>(type, (l_value - r_value));
 }
 
 template <typename T>
@@ -197,8 +273,26 @@ IOperand *TOperand<T>::doMul(eOperandType type, const std::string &left, const s
 
 	l_ss >> l_value;
 	r_ss >> r_value;
+	checkOverflow(l_value * r_value);
+	checkUnderflow(l_value * r_value);
 
 	return new TOperand<T>(type, (l_value * r_value));
+}
+
+template <>
+IOperand *TOperand<int8>::doMul(eOperandType type, const std::string &left, const std::string &right) const
+{
+	int l_value;
+	int r_value;
+	std::istringstream l_ss(left);
+	std::istringstream r_ss(right);
+
+	l_ss >> l_value;
+	r_ss >> r_value;
+	checkOverflow(l_value * r_value);
+	checkUnderflow(l_value * r_value);
+
+	return new TOperand<int8>(type, (l_value * r_value));
 }
 
 template <typename T>
@@ -212,7 +306,45 @@ IOperand *TOperand<T>::doDiv(eOperandType type, const std::string &left, const s
 	l_ss >> l_value;
 	r_ss >> r_value;
 
+	try
+	{
+		if (r_value == 0)
+			throw Exception("Floating exception (Divide by 0)");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x52);
+	}
+	checkOverflow(l_value / r_value);
+	checkUnderflow(l_value / r_value);
+
 	return new TOperand<T>(type, (l_value / r_value));
+}
+
+template <>
+IOperand *TOperand<int8>::doDiv(eOperandType type, const std::string &left, const std::string &right) const
+{
+	int l_value;
+	int r_value;
+	std::istringstream l_ss(left);
+	std::istringstream r_ss(right);
+
+	l_ss >> l_value;
+	r_ss >> r_value;
+
+	try
+	{
+		if (r_value == 0)
+			throw Exception("Floating exception (Divide by 0)");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x52);
+	}
+	checkOverflow(l_value / r_value);
+	checkUnderflow(l_value / r_value);
+
+	return new TOperand<int8>(type, (l_value / r_value));
 }
 
 template <typename T>
@@ -226,10 +358,53 @@ IOperand *TOperand<T>::doMod(eOperandType type, const std::string &left, const s
 	l_ss >> l_value;
 	r_ss >> r_value;
 
+	try
+	{
+		if (r_value == 0)
+			throw Exception("Floating exception (Modulo by 0)");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x53);
+	}
 	if (TRAIT::is_float<T>::value || TRAIT::is_double<T>::value)
+	{
+		checkOverflow(fmod(l_value, r_value));
+		checkUnderflow(fmod(l_value, r_value));
 		return new TOperand<T>(type, fmod(l_value, r_value));
+	}
 	else
-		return new TOperand<T>(type, (l_value - ((l_value / r_value) * r_value)));	
+	{
+		checkOverflow((l_value - ((l_value / r_value) * r_value)));
+		checkUnderflow((l_value - ((l_value / r_value) * r_value)));
+		return new TOperand<T>(type, (l_value - ((l_value / r_value) * r_value)));
+	}
+}
+
+template <>
+IOperand *TOperand<int8>::doMod(eOperandType type, const std::string &left, const std::string &right) const
+{
+	int l_value;
+	int r_value;
+	std::istringstream l_ss(left);
+	std::istringstream r_ss(right);
+
+	l_ss >> l_value;
+	r_ss >> r_value;
+
+	try
+	{
+		if (r_value == 0)
+			throw Exception("Floating exception (Modulo by 0)");
+	} catch (Exception ex)
+	{
+		std::cerr << ex.what() << std::endl;
+		exit(0x53);
+	}
+	checkOverflow((l_value % r_value));
+	checkUnderflow((l_value % r_value));
+
+	return new TOperand<int8>(type, (l_value % r_value));
 }
 
 #endif // !ABSTRACTVM_T_OPERAND

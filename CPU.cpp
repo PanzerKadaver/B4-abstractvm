@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 
 #include "CPU.hpp"
 #include "SOperandMaker.hpp"
@@ -100,7 +101,7 @@ bool	CPU::assert(va_list *args)
 	IOperand *op = va_arg(*args, IOperand *);
 	IOperand *top = NULL;
 
-	_vm.getModule("StackMemory").exec("front", top);
+	_vm.getModule("StackMemory").exec("front", &top);
 	try
 	{
 		if (op->toString().empty() && top->getType() == op->getType())
@@ -161,7 +162,7 @@ bool	CPU::sub(va_list *args)
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("doop", left, right);
+	exec("doop", &left, &right);
 	result = (*left - *right);
 	delete left;
 	delete right;
@@ -176,7 +177,7 @@ bool	CPU::mul(va_list *args)
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("doop", left, right);
+	exec("doop", &left, &right);
 	result = (*left * *right);
 	delete left;
 	delete right;
@@ -191,7 +192,7 @@ bool	CPU::div(va_list *args)
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("doop", left, right);
+	exec("doop", &left, &right);
 	result = (*left / *right);
 	delete left;
 	delete right;
@@ -206,7 +207,7 @@ bool	CPU::mod(va_list *args)
 	IOperand *result = NULL;
 
 	(void)args;
-	exec("doop", left, right);
+	exec("doop", &left, &right);
 	result = (*left % *right);
 	delete left;
 	delete right;
@@ -218,20 +219,20 @@ bool	CPU::print(va_list *args)
 {
 	IOperand *test8 = SOperandMaker::createOperand(Int8, "");
 	IOperand *top = NULL;
-	char c;
+	int16 c;
 
 	(void)args;
 	exec("assert", test8);
-	_vm.getModule("StackMemory").exec("front", top);
+	_vm.getModule("StackMemory").exec("front", &top);
 	std::istringstream t_ss(top->toString());
 	t_ss >> c;
-	std::cout << c << std::endl;
+	std::cout << static_cast<char>(c) << std::endl;
 	return true;
 }
 
 bool	CPU::exit(va_list *args)
 {
 	(void)args;
-	/* _vm.exit() */
+	_vm.exit();
 	return true;
 }

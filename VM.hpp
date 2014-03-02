@@ -12,9 +12,10 @@ public:
 	~VM(void) {};
 
 	IModule &getModule(const char *) const;
+	void	exit() const;
 
 private:
-	std::map<const char *, IModule *> _modules;
+	std::map<const std::string, IModule *> _modules;
 };
 
 #endif // !ABSTRACTVM_VM

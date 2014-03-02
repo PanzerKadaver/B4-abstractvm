@@ -111,33 +111,33 @@ bool IO::token_is_ok(va_list *args)
 	it = instr_map.find(token);
 	if (it != instr_map.end()) // if token is INSTR 
 	{
-		std::cout << "token [" << token << "] found as INSTR" << std::endl; // DEBUG 
+		//std::cout << "token [" << token << "] found as INSTR" << std::endl; // DEBUG 
 		is_ok = true;
 	}
 
 	it = types_map.find(token);
 	if (it != types_map.end() && is_ok == false) // if token is TYPE 
 	{
-		std::cout << "token [" << token << "] found as TYPE" << std::endl; // DEBUG 
+		//std::cout << "token [" << token << "] found as TYPE" << std::endl; // DEBUG 
 		is_ok = true;
 	}
 
 	if (is_ok == false) // if not INSTR nor TYPE, check if VALUE 
 		if ((exec("check_value", token.c_str())) == true)
 		{
-			std::cout << "token [" << token << "] found as VALUE" << std::endl; // DEBUG 
+			//std::cout << "token [" << token << "] found as VALUE" << std::endl; // DEBUG 
 			is_ok = true;
 		}
 
 		if ((token == "(" || token == ")") && is_ok == false) // if token is PARENTHESIS 
 		{
-			std::cout << "token [" << token << "] found as PARENTHESIS" << std::endl; // DEBUG 
+			//std::cout << "token [" << token << "] found as PARENTHESIS" << std::endl; // DEBUG 
 			is_ok = true;
 		}
 
 		if (token[0] == ';' && is_ok == false)
 		{
-			std::cout << "token [" << token << "] found as COMM" << std::endl; // DEBUG 
+			//std::cout << "token [" << token << "] found as COMM" << std::endl; // DEBUG 
 			is_ok = true;
 		}
 
@@ -192,7 +192,7 @@ bool IO::token_order(va_list *args)
 			return false;
 			//std::cout << "bad syntax 6 (must be ')') " << std::endl; // exception UNEXPECTED TOKEN 
 
-		if (commandtab.size() == 6 && commandtab[i][0] != ';')
+		if (commandtab.size() == 6 && commandtab[5][0] != ';')
 			return false;
 			//std::cout << "bad syntax 6 (must be comm) " << std::endl; // exception UNEXPECTED TOKEN 
 	}
@@ -241,6 +241,7 @@ bool IO::parser(va_list *args)
 	std::string token;
 
 	(void)args;
+	//std::cout << "DEBUG : " << commandline << std::endl;
 	if (commandline.length() == 0) 
 		return false;
 
@@ -279,7 +280,7 @@ bool IO::jarvis(va_list *args)
 
 	if (ac == 2)
 	{
-		std::cout << av[1] << std::endl;
+		std::cout << "Read from file [" << av[1] << "]" << std::endl;
 		file.open(av[1]);
 		try
 		{

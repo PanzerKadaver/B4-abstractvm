@@ -2,8 +2,9 @@
 # define ABSTRACTVM_I_OPERAND_HPP_
 
 # include <string>
+# include <cstdint>
 
-typedef char int8;
+typedef int8_t int8;
 typedef short int16;
 typedef int int32;
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include "VM.hpp"
 #include "IO.hpp"
@@ -17,9 +18,10 @@ VM::VM()
 
 IModule &VM::getModule(const char *mod) const
 {
-	std::map<const char *, IModule *>::const_iterator it = _modules.find(mod);
+	const std::string s_mod(mod);
+	std::map<const std::string, IModule *>::const_iterator it = _modules.find(s_mod);
 
-	std::cout << "Get module [" << mod << "]" << std::endl;
+	//std::cout << "Get module [" << s_mod << "]" << std::endl;
 	try
 	{
 		if (it == _modules.end())
@@ -27,7 +29,13 @@ IModule &VM::getModule(const char *mod) const
 	} catch (Exception ex)
 	{
 		std::cerr << ex.what() << std::endl;
-		exit(0x01);
+		::exit(0x01);
 	}
 	return *(it->second);
+}
+
+
+void	VM::exit() const
+{
+	::exit(0);
 }
