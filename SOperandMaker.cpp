@@ -1,6 +1,7 @@
 #include <map>
 #include <sstream>
 #include <cstdlib>
+#include <limits>
 #include <iostream> // DEBUG
 
 #include "SOperandMaker.hpp"
