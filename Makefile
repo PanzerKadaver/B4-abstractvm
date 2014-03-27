@@ -1,32 +1,36 @@
-CC = g++
+CXX = g++
 
 RM = rm -f
 
-SRC =	AModule.cpp \
+SRCS =	AModule.cpp \
 	Chipset.cpp \
-	Commands.cpp \
 	CPU.cpp \
 	IO.cpp \
 	main.cpp \
 	SOperandMaker.cpp \
 	StackMemory.cpp \
-	VM.cpp
+	VM.cpp \
 
-OBJ = $(SRC:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
 
-NAME = avm
+BIN = avm
 
-all:		$(NAME)
 
-$(NAME):	$(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+$(BIN):	$(OBJS)
+	$(CXX) $(OBJS) -o $(BIN)
+
+all:	$(BIN)
+
+debug: CXX = clang++
+debug: CXXFLAGS = -W -Wall -Wextra -g3
+debug: re
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(BIN)
 
-re: clean fclean all
+re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all debug clean fclean re
